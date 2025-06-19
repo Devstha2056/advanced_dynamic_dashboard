@@ -207,18 +207,18 @@ class DashboardBlock(models.Model):
                     self._cr.execute(query, params)
 
                     records = self._cr.dictfetchall()
-                    x_axis, y_axis = [], []
+                    x_axis = []
                     for record in records:
-                        name = record.get('name')
-                        if isinstance(name, dict):  # many2one fallback (translated name)
-                            name = name.get(self._context.get('lang') or 'en_US', str(name))
-                        x_axis.append(name or 'N/A')  # fallback for missing name
-                        y_axis.append(record.get('value') or 0)
-
-                    vals.update({
-                        'x_axis': x_axis,
-                        'y_axis': y_axis,
-                    })
+                        if record.get('name') and type(
+                                record.get('name')) == dict:
+                            x_axis.append(record.get('name')[self._context.get(
+                                'lang') or 'en_US'])
+                        else:
+                            x_axis.append(record.get(rec.group_by_id.name))
+                    y_axis = []
+                    for record in records:
+                        y_axis.append(record.get('value'))
+                    vals.update({'x_axis': x_axis, 'y_axis': y_axis})
                 else:
                     query, params = self.env.registry[rec.model_name].get_query(
                         self.env[rec.model_name], domain, rec.operation,
