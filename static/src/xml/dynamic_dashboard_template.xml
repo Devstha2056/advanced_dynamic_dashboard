@@ -81,8 +81,9 @@
                  name="gridstack">
             </div>
         </div>
-        </t>
+    </t>
     <t t-name="DynamicDashboardTile">
+        <t t-set="is_admin" t-value="(state and state.data and state.data.is_admin) or false"/>
 <!--Tile building template-->
         <div t-att-class="'grid-stack-item ' + widget.name"
              t-att-data-gs-y="widget.y_pos"
@@ -94,7 +95,7 @@
          t-att-style="widget.color+widget.text_color">
         <div t-att-style="widget.color+widget.text_color"
              class="tile-container d-flex  align-items-center  w-100  my-3">
-            <t t-if="state.data.is_admin">
+            <t t-if="is_admin">
                 <a class="block_setting tile_edit tile-container__setting-icon">
                     <i class="fa fa-edit"/>
                 </a>

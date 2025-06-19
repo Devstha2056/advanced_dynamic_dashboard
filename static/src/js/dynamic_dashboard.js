@@ -69,12 +69,19 @@ odoo.define('advanced_dynamic_dashboard.Dashboard', function (require) {
         // },
 
         //Function return render_dashboards() and gridstack_init()
+//                start: function () {
+//            var self = this;
+//            this.set("title", 'Dashboard');
+//            return this._super().then(function () {
+//                self.render_dashboards();
+//            });
+//        }, Dev Code
         start: function () {
             var self = this;
             this.set("title", 'Dashboard');
-            return this._super().then(function () {
-                self.render_dashboards();
-            });
+            this.render();
+            self.render_dashboards();
+            return this._super();
         },
         //Fetch data and call rpc query to create chart or tile. return block_ids
         fetch_data: function () {
@@ -88,6 +95,7 @@ odoo.define('advanced_dynamic_dashboard.Dashboard', function (require) {
                 }).then(function (result) {
                     self.block_ids = result.block_id;
                     self.is_admin = result.is_admin;
+                    console.log("is_admin in JS:", self.is_admin);
                 });
             } else {
                 // If filterBool is false, fetch blocks without global date filtering to let each block apply its own filter
@@ -99,6 +107,7 @@ odoo.define('advanced_dynamic_dashboard.Dashboard', function (require) {
                     // Each block should have its own filter applied server-side
                     self.block_ids = result.block_id;
                     self.is_admin = result.is_admin;
+                    console.log("is_admin in JS:", self.is_admin);
                 });
             }
         },
@@ -781,6 +790,12 @@ odoo.define('advanced_dynamic_dashboard.Dashboard', function (require) {
                 // Hide loading indicator
                 self.$el.find('.o_dynamic_dashboard').removeClass('o_loading');
             });
+        },
+        render: function () {
+            this.$el.html(QWeb.render(this.template, {
+                state: { data: { is_admin: this.is_admin } }
+            }));
+            return this;
         },
     });
     core.action_registry.add('advanced_dynamic_dashboard', DynamicDashboard);

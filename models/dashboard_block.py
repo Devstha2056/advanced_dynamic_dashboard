@@ -219,6 +219,18 @@ class DashboardBlock(models.Model):
                         'x_axis': x_axis,
                         'y_axis': y_axis,
                     })
+                    # x_axis = []
+                    # for record in records:
+                    #     if record.get('name') and type(
+                    #             record.get('name')) == dict:
+                    #         x_axis.append(record.get('name')[self._context.get(
+                    #             'lang') or 'en_US'])
+                    #     else:
+                    #         x_axis.append(record.get(rec.group_by_id.name))
+                    # y_axis = []
+                    # for record in records:
+                    #     y_axis.append(record.get('value'))
+                    # vals.update({'x_axis': x_axis, 'y_axis': y_axis})
                 else:
                     query, params = self.env.registry[rec.model_name].get_query(
                         self.env[rec.model_name], domain, rec.operation,
