@@ -69,6 +69,13 @@ odoo.define('advanced_dynamic_dashboard.Dashboard', function (require) {
         // },
 
         //Function return render_dashboards() and gridstack_init()
+//                start: function () {
+//            var self = this;
+//            this.set("title", 'Dashboard');
+//            return this._super().then(function () {
+//                self.render_dashboards();
+//            });
+//        }, Dev Code
         start: function () {
             var self = this;
             this.set("title", 'Dashboard');
