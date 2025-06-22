@@ -200,37 +200,34 @@ class DashboardBlock(models.Model):
 
             if rec.model_name:
                 if rec.type == 'graph':
-                    query, params = self.env.registry[rec.model_name].get_query(
-                        self.env[rec.model_name], domain, rec.operation,
-                        rec.measured_field_id, group_by=rec.group_by_id
+                    query_result = self.env[rec.model_name].get_query(
+                        domain,
+                        rec.operation,
+                        rec.measured_field_id,
+                        group_by=rec.group_by_id if rec.type == 'graph' else None
                     )
-                    self._cr.execute(query, params)
+
+                    if isinstance(query_result, tuple) and len(query_result) == 2:
+                        query, params = query_result
+                        self._cr.execute(query, params)
+                    else:
+                        query = query_result
+                        self._cr.execute(query)
 
                     records = self._cr.dictfetchall()
                     x_axis, y_axis = [], []
                     for record in records:
                         name = record.get('name')
-                        if isinstance(name, dict):  # many2one fallback (translated name)
+                        if isinstance(name, dict):
                             name = name.get(self._context.get('lang') or 'en_US', str(name))
-                        x_axis.append(name or 'N/A')  # fallback for missing name
+                        x_axis.append(name or 'N/A')  
                         y_axis.append(record.get('value') or 0)
 
                     vals.update({
                         'x_axis': x_axis,
                         'y_axis': y_axis,
                     })
-                    # x_axis = []
-                    # for record in records:
-                    #     if record.get('name') and type(
-                    #             record.get('name')) == dict:
-                    #         x_axis.append(record.get('name')[self._context.get(
-                    #             'lang') or 'en_US'])
-                    #     else:
-                    #         x_axis.append(record.get(rec.group_by_id.name))
-                    # y_axis = []
-                    # for record in records:
-                    #     y_axis.append(record.get('value'))
-                    # vals.update({'x_axis': x_axis, 'y_axis': y_axis})
+
                 else:
                     query, params = self.env.registry[rec.model_name].get_query(
                         self.env[rec.model_name], domain, rec.operation,
