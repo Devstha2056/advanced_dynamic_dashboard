@@ -721,17 +721,27 @@ odoo.define('advanced_dynamic_dashboard.Dashboard', function (require) {
             let start_date = null;
             let end_date = today.toISOString().split('T')[0];
 
-            switch (filter) {
+           switch (filter) {
                 case 'today':
                     start_date = today.toISOString().split('T')[0];
+                    end_date = start_date;
                     break;
+
                 case 'week':
                     var firstDay = new Date(today);
-                    var day = today.getDay(); // Sunday - Saturday : 0 - 6
-                    var diffToMonday = day === 0 ? -6 : 1 - day; // Shift Sunday to last
+                    var lastDay = new Date(today);
+                    var day = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+
+                    var diffToMonday = day === 0 ? -6 : 1 - day;
+                    var diffToSunday = day === 0 ? 0 : 7 - day;
+
                     firstDay.setDate(today.getDate() + diffToMonday);
+                    lastDay.setDate(today.getDate() + diffToSunday);
+
                     start_date = firstDay.toISOString().split('T')[0];
+                    end_date = lastDay.toISOString().split('T')[0];
                     break;
+
                 case 'month':
                     var now = new Date();
                     var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -746,13 +756,15 @@ odoo.define('advanced_dynamic_dashboard.Dashboard', function (require) {
                     start_date = formatDate(firstDay);
                     end_date = formatDate(lastDay);
                     break;
+
                 case 'year':
                     var firstDay = new Date(today.getFullYear(), 0, 1);
+                    var lastDay = new Date(today.getFullYear(), 11, 31);
+
                     start_date = firstDay.toISOString().split('T')[0];
+                    end_date = lastDay.toISOString().split('T')[0];
                     break;
             }
-
-
             // Get all tiles
             this._rpc({
                 model: 'dashboard.block',
