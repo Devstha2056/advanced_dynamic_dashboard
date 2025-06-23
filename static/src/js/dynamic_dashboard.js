@@ -727,16 +727,14 @@ odoo.define('advanced_dynamic_dashboard.Dashboard', function (require) {
                     end_date = start_date;
                     break;
 
-                case 'week':
+                 case 'week':
                     var firstDay = new Date(today);
                     var lastDay = new Date(today);
                     var day = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
 
-                    var diffToMonday = day === 0 ? -6 : 1 - day;
-                    var diffToSunday = day === 0 ? 0 : 7 - day;
-
-                    firstDay.setDate(today.getDate() + diffToMonday);
-                    lastDay.setDate(today.getDate() + diffToSunday);
+                    // Sunday to Saturday
+                    firstDay.setDate(today.getDate() - day);       // Back to Sunday
+                    lastDay.setDate(today.getDate() + (6 - day));  // Forward to Saturday
 
                     start_date = firstDay.toISOString().split('T')[0];
                     end_date = lastDay.toISOString().split('T')[0];
