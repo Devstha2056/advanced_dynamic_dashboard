@@ -139,7 +139,7 @@ odoo.define('advanced_dynamic_dashboard.Dashboard', function (require) {
             this.$el.find('.dropdown-export').toggleClass('dropdown-menu-dark', isDarkTheme);
         },
         //Function for applying filter
-        _onchangeFilter: function () {
+       _onchangeFilter: function() {
             var start_date = this.$('#start-date').val();
             var end_date = this.$('#end-date').val();
             if (!start_date) {
@@ -148,7 +148,17 @@ odoo.define('advanced_dynamic_dashboard.Dashboard', function (require) {
             if (!end_date) {
                 end_date = "null";
             }
-
+            this._rpc({
+                model: 'dashboard.block',
+                method: 'get_dashboard_vals',
+                args: [[], this.action_id, start_date, end_date],
+            }).then(function (result) {
+                self.block_ids = result;
+                // Reinitialize gridstack layout after updating data
+                self.gridstack_init(self);
+                self.$('.o_dynamic_dashboard').empty();
+                self.render_dashboards();
+            });
         },
         //Function fetch random color values and set chart color
         get_colors: function (x_axis) {
@@ -739,6 +749,7 @@ odoo.define('advanced_dynamic_dashboard.Dashboard', function (require) {
                     start_date = firstDay.toISOString().split('T')[0];
                     break;
             }
+
 
             // Get all tiles
             this._rpc({

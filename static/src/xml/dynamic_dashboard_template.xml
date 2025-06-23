@@ -63,7 +63,6 @@
                                id="theme-toggle"/>
                             <i class="theme_icon bi bi-moon-stars-fill"/>
                         </label>
-                        <!-- Date Inputs -->
                         <div class="date-inputs navbar-items btn-group"
                              style="position: absolute; left: 35.5em;">
                         <div class="btn-group" role="group">
@@ -71,7 +70,9 @@
                             <button class="btn btn-filter" data-filter="week">This Week</button>
                             <button class="btn btn-filter" data-filter="month">This Month</button>
                             <button class="btn btn-filter" data-filter="year">This Year</button>
+
                         </div>
+
                     </div>
 
                     </ul>
