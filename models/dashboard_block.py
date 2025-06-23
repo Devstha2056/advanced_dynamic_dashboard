@@ -200,19 +200,13 @@ class DashboardBlock(models.Model):
 
             if rec.model_name:
                 if rec.type == 'graph':
-                    query_result = self.env[rec.model_name].get_query(
+                    query, params, *_ = self.env[rec.model_name].get_query(
                         domain,
                         rec.operation,
                         rec.measured_field_id,
                         group_by=rec.group_by_id if rec.type == 'graph' else None
                     )
-
-                    if isinstance(query_result, tuple) and len(query_result) == 2:
-                        query, params = query_result
-                        self._cr.execute(query, params)
-                    else:
-                        query = query_result
-                        self._cr.execute(query)
+                    self._cr.execute( query, params, *_ )
 
                     records = self._cr.dictfetchall()
                     x_axis, y_axis = [], []
@@ -229,11 +223,11 @@ class DashboardBlock(models.Model):
                     })
 
                 else:
-                    query, params = self.env.registry[rec.model_name].get_query(
+                    query, params, *_ = self.env.registry[rec.model_name].get_query(
                         self.env[rec.model_name], domain, rec.operation,
                         rec.measured_field_id
                     )
-                    self._cr.execute(query, params)
+                    self._cr.execute(query, params, *_)
                     records = self._cr.dictfetchall()
 
                     total = records[0].get('value')
