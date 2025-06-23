@@ -726,7 +726,9 @@ odoo.define('advanced_dynamic_dashboard.Dashboard', function (require) {
                     start_date = today.toISOString().split('T')[0];
                     break;
                 case 'week':
-
+                    var firstDay = new Date(today);
+                    var day = today.getDay(); // Sunday - Saturday : 0 - 6
+                    var diffToMonday = day === 0 ? -6 : 1 - day; // Shift Sunday to last
                     firstDay.setDate(today.getDate() + diffToMonday);
                     start_date = firstDay.toISOString().split('T')[0];
                     break;
