@@ -206,6 +206,8 @@ class DashboardBlock(models.Model):
                         rec.measured_field_id,
                         group_by=rec.group_by_id if rec.type == 'graph' else None
                     )
+                    if not isinstance(params, (list, tuple, dict)):
+                        params = [params]
                     self._cr.execute(query, params)
 
                     records = self._cr.dictfetchall()
@@ -226,6 +228,8 @@ class DashboardBlock(models.Model):
                     query, params, *_ = self.env[rec.model_name].get_query(
                         domain, rec.operation, rec.measured_field_id
                     )
+                    if not isinstance(params, (list, tuple, dict)):
+                        params = [params]
                     self._cr.execute(query, params)
                     records = self._cr.dictfetchall()
 
