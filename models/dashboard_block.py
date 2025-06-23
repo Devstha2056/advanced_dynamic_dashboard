@@ -225,6 +225,7 @@ class DashboardBlock(models.Model):
                 else:
                     query, params, *_ = self.env.registry[rec.model_name].get_query(
                         self.env[rec.model_name], domain, rec.operation,
+                        
                         rec.measured_field_id
                     )
                     self._cr.execute(query, params, *_)
